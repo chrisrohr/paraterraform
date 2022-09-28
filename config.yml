@@ -1,6 +1,6 @@
 database:
   driverClass: org.h2.Driver
-  url: jdbc:h2:./target/h2/foreground
+  url: jdbc:h2:./target/h2/foreground;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
 
 logging:
   level: INFO

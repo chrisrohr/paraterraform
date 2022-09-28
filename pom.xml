@@ -11,6 +11,8 @@
     <properties>
         <!-- Required dependencies -->
         <dropwizard.version>2.1.2</dropwizard.version>
+        <h2.version>2.1.214</h2.version>
+        <jdbi3.version>3.32.0</jdbi3.version>
 
         <!-- Versions for provided dependencies -->
         <lombok.version>1.18.24</lombok.version>
@@ -40,6 +42,8 @@
 
         <maven-compiler-plugin.java.release>17</maven-compiler-plugin.java.release>
         <maven-compiler-plugin.encoding>UTF-8</maven-compiler-plugin.encoding>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
     <dependencyManagement>
@@ -73,6 +77,22 @@
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-jdbi3</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-migrations</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
         </dependency>
 
         <!-- provided dependencies -->

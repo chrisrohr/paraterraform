@@ -1,8 +1,13 @@
 package com.fortitudetec.foreground;
 
 import com.fortitudetec.foreground.config.AppConfig;
+import com.fortitudetec.foreground.dao.TerraformStateDao;
+import com.fortitudetec.foreground.resource.StateResource;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
+import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.jdbi3.JdbiFactory;
+import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
@@ -19,6 +24,13 @@ public class App extends Application<AppConfig> {
 
     @Override
     public void initialize(Bootstrap<AppConfig> bootstrap) {
+        bootstrap.addBundle(new MigrationsBundle<>() {
+            @Override
+            public DataSourceFactory getDataSourceFactory(AppConfig configuration) {
+                return configuration.getDataSourceFactory();
+            }
+        });
+
         bootstrap.addBundle(new AssetsBundle("/ui", "/", "index.html"));
     }
 
@@ -28,6 +40,13 @@ public class App extends Application<AppConfig> {
         environment.jersey().setUrlPattern("/api/*");
 
         configureCors(environment);
+
+        final var factory = new JdbiFactory();
+        final var jdbi = factory.build(environment, appConfig.getDataSourceFactory(), "foreground-datasource");
+
+        var terraformStateDao = jdbi.onDemand(TerraformStateDao.class);
+
+        environment.jersey().register(new StateResource(terraformStateDao));
     }
 
     private static void configureCors(Environment environment) {

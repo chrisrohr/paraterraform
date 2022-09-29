@@ -13,6 +13,7 @@
         <dropwizard.version>2.1.2</dropwizard.version>
         <h2.version>2.1.214</h2.version>
         <jdbi3.version>3.32.0</jdbi3.version>
+        <kiwi.version>2.3.0</kiwi.version>
 
         <!-- Versions for provided dependencies -->
         <lombok.version>1.18.24</lombok.version>
@@ -93,6 +94,12 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kiwiproject</groupId>
+            <artifactId>kiwi</artifactId>
+            <version>${kiwi.version}</version>
         </dependency>
 
         <!-- provided dependencies -->

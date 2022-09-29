@@ -10,6 +10,7 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 import java.util.List;
+import java.util.Optional;
 
 @RegisterRowMapper(TerraformStateMapper.class)
 public interface TerraformStateDao {
@@ -18,10 +19,10 @@ public interface TerraformStateDao {
     List<TerraformState> list();
 
     @SqlQuery("select * from terraform_states where id = :id")
-    TerraformState get(@Bind("id") Long id);
+    Optional<TerraformState> findById(@Bind("id") Long id);
 
     @SqlUpdate("insert into terraform_states (name, content) values (:name, :content)")
     @GetGeneratedKeys
-    Long add(@BindBean TerraformState terraformState);
+    long insert(@BindBean TerraformState terraformState);
 
 }

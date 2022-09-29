@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex flex-center">
-    <h1>Home Page</h1>
+    <h1>History Page</h1>
   </q-page>
 </template>
 
@@ -8,6 +8,6 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'IndexPage',
+  name: 'HistoryPage',
 });
 </script>

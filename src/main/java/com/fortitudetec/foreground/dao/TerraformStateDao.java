@@ -25,4 +25,6 @@ public interface TerraformStateDao {
     @GetGeneratedKeys
     long insert(@BindBean TerraformState terraformState);
 
+    @SqlUpdate("delete from terraform_states where id = :id")
+    int deleteById(@Bind("id") Long id);
 }

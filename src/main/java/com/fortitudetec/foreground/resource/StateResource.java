@@ -1,23 +1,29 @@
 package com.fortitudetec.foreground.resource;
 
-import static org.kiwiproject.jaxrs.KiwiStandardResponses.standardGetResponse;
-import static org.kiwiproject.jaxrs.KiwiStandardResponses.standardPostResponse;
-
 import com.fortitudetec.foreground.dao.TerraformStateDao;
 import com.fortitudetec.foreground.model.TerraformState;
+import lombok.extern.slf4j.Slf4j;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import static org.kiwiproject.jaxrs.KiwiStandardResponses.standardGetResponse;
+import static org.kiwiproject.jaxrs.KiwiStandardResponses.standardPostResponse;
+import static org.kiwiproject.jaxrs.KiwiStandardResponses.standardDeleteResponse;
+
+
+
 @Path("/states")
 @Produces(MediaType.APPLICATION_JSON)
+@Slf4j
 public class StateResource {
 
     private final TerraformStateDao terraformStateDao;
@@ -51,4 +57,13 @@ public class StateResource {
 
         return standardPostResponse(uriBuilder.build(), savedState);
     }
+
+    @DELETE
+    @Path("/{id}")
+    public Response deleteById(@PathParam("id") Long id) {
+        var affectedCount = terraformStateDao.deleteById(id);
+        LOG.debug("Deleted {} terraform state records with id {}", affectedCount, id);
+        return standardDeleteResponse();
+    }
+
 }

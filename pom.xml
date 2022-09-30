@@ -21,8 +21,10 @@
         <!-- Versions for test dependencies -->
         <assertj.version>3.23.1</assertj.version>
         <awaitility.version>4.2.0</awaitility.version>
+        <embedded-postgres.version>2.0.0</embedded-postgres.version>
         <junit.jupiter.version>5.9.0</junit.jupiter.version>
         <junit-pioneer.version>1.7.1</junit-pioneer.version>
+        <kiwi-test.version>2.2.0</kiwi-test.version>
         <mockito.version>4.8.0</mockito.version>
 
         <!-- Plugin versions -->
@@ -128,6 +130,17 @@
         </dependency>
 
         <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-testing</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.zonky.test</groupId>
+            <artifactId>embedded-postgres</artifactId>
+            <version>${embedded-postgres.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <scope>test</scope>
@@ -162,6 +175,12 @@
             <artifactId>junit-pioneer</artifactId>
             <version>${junit-pioneer.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kiwiproject</groupId>
+            <artifactId>kiwi-test</artifactId>
+            <version>${kiwi-test.version}</version>
         </dependency>
 
         <dependency>

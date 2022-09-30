@@ -1,24 +1,24 @@
 package com.fortitudetec.foreground.resource;
 
+import static org.kiwiproject.jaxrs.KiwiStandardResponses.standardDeleteResponse;
+import static org.kiwiproject.jaxrs.KiwiStandardResponses.standardGetResponse;
+import static org.kiwiproject.jaxrs.KiwiStandardResponses.standardPostResponse;
+
 import com.fortitudetec.foreground.dao.TerraformStateDao;
 import com.fortitudetec.foreground.model.TerraformState;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.validation.Valid;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
-
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-
-import static org.kiwiproject.jaxrs.KiwiStandardResponses.standardGetResponse;
-import static org.kiwiproject.jaxrs.KiwiStandardResponses.standardPostResponse;
-import static org.kiwiproject.jaxrs.KiwiStandardResponses.standardDeleteResponse;
 
 @Path("/states")
 @Produces(MediaType.APPLICATION_JSON)
@@ -45,7 +45,7 @@ public class StateResource {
     }
 
     @POST
-    public Response add(TerraformState state, @Context UriInfo uriInfo) {
+    public Response add(@Valid TerraformState state, @Context UriInfo uriInfo) {
         var id = terraformStateDao.insert(state);
 
         var uriBuilder = uriInfo.getAbsolutePathBuilder();

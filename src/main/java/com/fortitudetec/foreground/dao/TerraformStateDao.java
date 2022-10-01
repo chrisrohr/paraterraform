@@ -15,10 +15,10 @@ import java.util.Optional;
 @RegisterRowMapper(TerraformStateMapper.class)
 public interface TerraformStateDao {
 
-    @SqlQuery("select * from terraform_states")
+    @SqlQuery("select id, name, uploaded_at from terraform_states")
     List<TerraformState> list();
 
-    @SqlQuery("select * from terraform_states where id = :id")
+    @SqlQuery("select id, name, uploaded_at from terraform_states where id = :id")
     Optional<TerraformState> findById(@Bind("id") Long id);
 
     @SqlUpdate("insert into terraform_states (name, content) values (:name, :content)")

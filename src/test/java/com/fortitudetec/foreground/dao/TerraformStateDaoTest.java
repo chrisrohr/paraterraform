@@ -2,10 +2,8 @@ package com.fortitudetec.foreground.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.tuple;
 import static org.kiwiproject.collect.KiwiLists.first;
 
-import com.fortitudetec.foreground.dao.mapper.TerraformStateMapper;
 import com.fortitudetec.foreground.model.TerraformState;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
@@ -59,10 +57,9 @@ class TerraformStateDaoTest {
 
             var states = dao.list();
 
-            assertThat(states)
-                    .extracting("name", "content")
-                    .contains(tuple("Sample state", "{}"));
-
+            var state = first(states);
+            assertThat(state.getName()).isEqualTo("Sample state");
+            assertThat(state.getContent()).isBlank();
             assertThat(first(states).getUploadedAt()).isNotNull();
         }
     }
@@ -78,7 +75,7 @@ class TerraformStateDaoTest {
 
             assertThat(state.getId()).isEqualTo(id);
             assertThat(state.getName()).isEqualTo("To retrieve");
-            assertThat(state.getContent()).isEqualTo("{}");
+            assertThat(state.getContent()).isBlank();
             assertThat(state.getUploadedAt()).isNotNull();
         }
 
@@ -106,14 +103,15 @@ class TerraformStateDaoTest {
 
             var savedState = handle.createQuery("select * from terraform_states where id = :id")
                     .bind("id", generatedId)
-                    .registerRowMapper(new TerraformStateMapper())
-                    .mapTo(TerraformState.class)
+                    .mapToMap()
                     .first();
 
-            assertThat(savedState.getId()).isEqualTo(generatedId);
-            assertThat(savedState.getName()).isEqualTo("The state");
-            assertThat(savedState.getContent()).isEqualTo("{}");
-            assertThat(savedState.getUploadedAt()).isNotNull();
+            assertThat(savedState)
+                    .containsEntry("id", generatedId)
+                    .containsEntry("name", "The state")
+                    .containsEntry("content", "{}");
+
+            assertThat(savedState.get("uploaded_at")).isNotNull();
         }
 
         @Test

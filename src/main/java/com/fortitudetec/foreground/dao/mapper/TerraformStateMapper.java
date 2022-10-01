@@ -15,7 +15,6 @@ public class TerraformStateMapper implements RowMapper<TerraformState> {
         return TerraformState.builder()
                 .id(rs.getLong("id"))
                 .name(rs.getString("name"))
-                .content(rs.getString("content"))
                 .uploadedAt(KiwiJdbc.instantFromTimestamp(rs, "uploaded_at"))
                 .build();
     }

@@ -1,0 +1,32 @@
+version: 2
+updates:
+  # Java dependencies
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    assignees:
+      - "chrisrohr"
+    reviewers:
+      - "chrisrohr"
+    open-pull-requests-limit: 10
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    assignees:
+      - "chrisrohr"
+    reviewers:
+      - "chrisrohr"
+
+  # Javascript dependencies
+  - package-ecosystem: npm
+    directory: "/src/main/js"
+    schedule:
+      interval: daily
+    assignees:
+      - "chrisrohr"
+    reviewers:
+      - "chrisrohr"

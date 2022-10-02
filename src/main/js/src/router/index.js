@@ -13,7 +13,7 @@ import routes from './routes';
  * with the Router instance.
  */
 
-export default route((/* { store, ssrContext } */) => {
+export default route(() => {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
     : (process.env.VUE_ROUTER_MODE === 'history' ? createWebHistory : createWebHashHistory);

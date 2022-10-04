@@ -21,6 +21,9 @@ public interface TerraformStateDao {
     @SqlQuery("select id, name, uploaded_at from terraform_states where id = :id")
     Optional<TerraformState> findById(@Bind("id") Long id);
 
+    @SqlQuery("select content from terraform_states where id = :id")
+    Optional<String> findContentById(@Bind("id") Long id);
+
     @SqlUpdate("insert into terraform_states (name, content) values (:name, :content)")
     @GetGeneratedKeys
     long insert(@BindBean TerraformState terraformState);

@@ -65,4 +65,11 @@ public class StateResource {
         return standardDeleteResponse();
     }
 
+    @GET
+    @Path("/{id}/content")
+    public Response getContent(@PathParam("id") Long id) {
+        var content = terraformStateDao.findContentById(id);
+        return standardGetResponse(content, "Unable to find terraform state");
+    }
+
 }

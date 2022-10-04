@@ -160,4 +160,24 @@ class TerraformStateDaoTest {
             assertThat(countOfRecordsWithId).isZero();
         }
     }
+
+    @Nested
+    class FindContentById {
+
+        @Test
+        void shouldReturnTerraformStateWithGivenId() {
+            var id = saveTestTerraformStateRecord("To retrieve content", "dave");
+
+            var content = dao.findContentById(id).orElseThrow();
+
+            assertThat(content).isEqualTo("dave");
+        }
+
+        @Test
+        void shouldReturnOptionalEmptyWhenNoRecordFound() {
+            var content = dao.findContentById(1L);
+
+            assertThat(content).isEmpty();
+        }
+    }
 }

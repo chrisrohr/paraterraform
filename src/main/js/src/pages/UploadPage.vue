@@ -4,6 +4,9 @@
     <div class="row flex flex-center">
       <h3>Upload Page</h3>
     </div>
+    <div class="row flex flex-center">
+      <input type="file" accept=".tf" ref="fileupload" @change="handleFileUpload( $event )"/>
+    </div>
 
     <div class="row flex flex-center">
       <q-table
@@ -28,6 +31,7 @@
 
 <script>
 import { useQuasar } from 'quasar';
+import { api } from 'boot/axios';
 
 export default {
   setup() {
@@ -59,6 +63,9 @@ export default {
         },
       ],
       data: [],
+      selectedFile: false,
+      uploaderLabel: 'Select a File',
+      showUploadButton: false,
     };
   },
   mounted() {
@@ -66,7 +73,7 @@ export default {
   },
   methods: {
     getStates() {
-      this.$api.get('/states')
+      api.get('/states')
         .then((response) => {
           this.data = response.data;
         });
@@ -88,9 +95,30 @@ export default {
         },
         persistent: true,
       }).onOk(() => {
-        this.$api.delete(`/states/${row.id}`)
+        api.delete(`/states/${row.id}`)
           .then(() => this.getStates());
       });
+    },
+    handleFileUpload(event) {
+      const formData = new FormData();
+      formData.append('name', event.target.files[0].name);
+      formData.append('file', event.target.files[0]);
+
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+
+      api.post(
+        '/states',
+        formData,
+        config,
+      ).then(() => this.resetFileInput());
+    },
+    resetFileInput() {
+      this.$refs.fileupload.value = null;
+      this.getStates();
     },
   },
 };

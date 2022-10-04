@@ -7,8 +7,14 @@ import static org.kiwiproject.jaxrs.KiwiStandardResponses.standardPostResponse;
 import com.fortitudetec.foreground.dao.TerraformStateDao;
 import com.fortitudetec.foreground.model.TerraformState;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import javax.validation.Valid;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -44,10 +50,18 @@ public class StateResource {
         return standardGetResponse(state, "Unable to find terraform state");
     }
 
-    @POST
-    public Response add(@Valid TerraformState state, @Context UriInfo uriInfo) {
-        var id = terraformStateDao.insert(state);
 
+    @POST
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response uploadStateFile(@FormDataParam("file") InputStream stateFileInputStream,
+                                    @FormDataParam("name") String name,
+                                    @Context UriInfo uriInfo) throws IOException {
+        String dataContent = IOUtils.toString(stateFileInputStream, StandardCharsets.UTF_8);
+        var state = TerraformState.builder()
+                .name(name)
+                .content(dataContent)
+                .build();
+        var id = terraformStateDao.insert(state);
         var uriBuilder = uriInfo.getAbsolutePathBuilder();
         uriBuilder.path(Long.toString(id));
 
@@ -71,5 +85,4 @@ public class StateResource {
         var content = terraformStateDao.findContentById(id);
         return standardGetResponse(content, "Unable to find terraform state");
     }
-
 }

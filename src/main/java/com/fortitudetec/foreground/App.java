@@ -6,6 +6,7 @@ import com.fortitudetec.foreground.resource.StateResource;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.db.DataSourceFactory;
+import io.dropwizard.forms.MultiPartBundle;
 import io.dropwizard.jdbi3.JdbiFactory;
 import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
@@ -24,13 +25,14 @@ public class App extends Application<AppConfig> {
 
     @Override
     public void initialize(Bootstrap<AppConfig> bootstrap) {
+        bootstrap.addBundle(new MultiPartBundle());
         bootstrap.addBundle(new MigrationsBundle<>() {
             @Override
             public DataSourceFactory getDataSourceFactory(AppConfig configuration) {
                 return configuration.getDataSourceFactory();
             }
-        });
 
+        });
         bootstrap.addBundle(new AssetsBundle("/ui", "/", "index.html"));
     }
 

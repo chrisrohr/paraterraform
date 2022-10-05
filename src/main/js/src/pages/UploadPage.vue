@@ -5,7 +5,8 @@
       <h3>Upload Page</h3>
     </div>
     <div class="row flex flex-center">
-      <input type="file" accept=".tf" ref="fileupload" @change="handleFileUpload( $event )"/>
+      <q-file v-model="fileToUpload" dense outlined accept=".tf" />
+      <q-btn push color="primary" round icon="file_upload" @click="handleFileUpload" />
     </div>
 
     <div class="row flex flex-center">
@@ -14,6 +15,16 @@
         :columns="columns"
         style="width: 70%"
       >
+        <template v-slot:body-cell-uploadedAt="props">
+          <q-td :props="props">
+            <span>
+              {{ this.formatDateRelative(props.row.uploadedAt) }}
+              <q-tooltip>
+                {{ this.formatDateISO(props.row.uploadedAt) }}
+              </q-tooltip>
+            </span>
+          </q-td>
+        </template>
 
         <template v-slot:body-cell-action="props">
           <q-td :props="props">
@@ -32,6 +43,8 @@
 <script>
 import { useQuasar } from 'quasar';
 import { api } from 'boot/axios';
+import { ref } from 'vue';
+import { DateTime } from 'luxon';
 
 export default {
   setup() {
@@ -66,12 +79,19 @@ export default {
       selectedFile: false,
       uploaderLabel: 'Select a File',
       showUploadButton: false,
+      fileToUpload: ref(null),
     };
   },
   mounted() {
     this.getStates();
   },
   methods: {
+    formatDateRelative(val) {
+      return DateTime.fromMillis(val * 1000).toRelative();
+    },
+    formatDateISO(val) {
+      return DateTime.fromMillis(val * 1000).toISO();
+    },
     getStates() {
       api.get('/states')
         .then((response) => {
@@ -81,7 +101,7 @@ export default {
     deleteState(row) {
       this.q.dialog({
         title: 'Confirm',
-        message: `Delete '${row.name}' uploaded at ${row.uploadedAt}?`,
+        message: `Delete '${row.name}' uploaded ${this.formatDateRelative(row.uploadedAt)}?`,
         ok: {
           push: true,
           label: 'Delete State',
@@ -99,10 +119,11 @@ export default {
           .then(() => this.getStates());
       });
     },
-    handleFileUpload(event) {
+    handleFileUpload() {
+      console.log(this.fileToUpload);
       const formData = new FormData();
-      formData.append('name', event.target.files[0].name);
-      formData.append('file', event.target.files[0]);
+      formData.append('name', this.fileToUpload.name);
+      formData.append('file', this.fileToUpload);
 
       const config = {
         headers: {
@@ -117,7 +138,7 @@ export default {
       ).then(() => this.resetFileInput());
     },
     resetFileInput() {
-      this.$refs.fileupload.value = null;
+      this.fileToUpload = null;
       this.getStates();
     },
   },

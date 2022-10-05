@@ -53,8 +53,8 @@
         <sonar.projectKey>fortitudetec_foreground</sonar.projectKey>
         <sonar.organization>fortitudetec-github</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.sources>src/main,pom.xml</sonar.sources>
-        <sonar.tests>src/test</sonar.tests>
+        <sonar.sources>src/main/java,src/main/js/src,pom.xml</sonar.sources>
+        <sonar.tests>src/test/java,src/main/js/test/jest/__tests__</sonar.tests>
     </properties>
 
     <dependencyManagement>
@@ -287,6 +287,20 @@
                             <executable>yarn</executable>
                             <arguments>
                                 <argument>build</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yarn test with coverage</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>test</phase>
+                        <configuration>
+                            <workingDirectory>./src/main/js</workingDirectory>
+                            <executable>yarn</executable>
+                            <arguments>
+                                <argument>test:unit:coverage</argument>
                             </arguments>
                         </configuration>
                     </execution>

@@ -1,5 +1,7 @@
 package com.fortitudetec.foreground;
 
+import static org.kiwiproject.json.JsonHelper.newDropwizardJsonHelper;
+
 import com.fortitudetec.foreground.config.AppConfig;
 import com.fortitudetec.foreground.dao.TerraformStateDao;
 import com.fortitudetec.foreground.resource.StateResource;
@@ -48,7 +50,9 @@ public class App extends Application<AppConfig> {
 
         var terraformStateDao = jdbi.onDemand(TerraformStateDao.class);
 
-        environment.jersey().register(new StateResource(terraformStateDao));
+        var jsonHelper = newDropwizardJsonHelper();
+
+        environment.jersey().register(new StateResource(terraformStateDao, jsonHelper));
     }
 
     private static void configureCors(Environment environment) {

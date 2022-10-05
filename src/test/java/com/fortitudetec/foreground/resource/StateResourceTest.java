@@ -3,6 +3,7 @@ package com.fortitudetec.foreground.resource;
 import static javax.ws.rs.client.Entity.entity;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kiwiproject.collect.KiwiLists.first;
+import static org.kiwiproject.test.constants.KiwiTestConstants.JSON_HELPER;
 import static org.kiwiproject.test.jaxrs.JaxrsTestHelper.assertCreatedResponseWithLocationEndingWith;
 import static org.kiwiproject.test.jaxrs.JaxrsTestHelper.assertInternalServerErrorResponse;
 import static org.kiwiproject.test.jaxrs.JaxrsTestHelper.assertNoContentResponse;
@@ -33,6 +34,7 @@ import org.mockito.ArgumentCaptor;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import javax.ws.rs.core.GenericType;
 
@@ -41,7 +43,7 @@ import javax.ws.rs.core.GenericType;
 class StateResourceTest {
 
     private static final TerraformStateDao TERRAFORM_STATE_DAO = mock(TerraformStateDao.class);
-    private static final StateResource STATE_RESOURCE = new StateResource(TERRAFORM_STATE_DAO);
+    private static final StateResource STATE_RESOURCE = new StateResource(TERRAFORM_STATE_DAO, JSON_HELPER);
 
     private static final ResourceExtension APP = ResourceExtension.builder()
             .bootstrapLogging(false)
@@ -199,6 +201,81 @@ class StateResourceTest {
 
             verify(TERRAFORM_STATE_DAO).deleteById(1L);
 
+        }
+    }
+
+    @Nested
+    class Diff {
+        private static final TerraformState STATE_1 = TerraformState.builder()
+                .id(1L)
+                .content("{\"hello\": \"world\"}")
+                .uploadedAt(Instant.parse("2022-10-05T00:00:00.00Z"))
+                .build();
+        private static final TerraformState STATE_2 = TerraformState.builder()
+                .id(1L)
+                .content("{\"hello\": \"Chris\", \"color\": \"purple\"}")
+                .uploadedAt(Instant.parse("2022-10-05T00:01:00.00Z"))
+                .build();
+
+        @Test
+        void shouldShowDifferencesGivenOrderedIds() {
+            when(TERRAFORM_STATE_DAO.findById(1L)).thenReturn(Optional.of(STATE_1));
+            when(TERRAFORM_STATE_DAO.findById(2L)).thenReturn(Optional.of(STATE_2));
+            when(TERRAFORM_STATE_DAO.findContentById(1L)).thenReturn(Optional.of(STATE_1.getContent()));
+            when(TERRAFORM_STATE_DAO.findContentById(2L)).thenReturn(Optional.of(STATE_2.getContent()));
+
+            var response = APP.client().target("/states/diff/{a}/{b}")
+                    .resolveTemplate("a", 1L)
+                    .resolveTemplate("b", 2L)
+                    .request()
+                    .get();
+
+            assertOkResponse(response);
+
+            var stringListMap = response.readEntity(new GenericType<Map<String, List<String>>>(){});
+
+            assertThat(stringListMap).size().isEqualTo(2);
+            assertThat(stringListMap.get("hello").get(0)).isEqualTo("world");
+            assertThat(stringListMap.get("hello").get(1)).isEqualTo("Chris");
+            assertThat(stringListMap.get("color").get(0)).isNull();
+            assertThat(stringListMap.get("color").get(1)).isEqualTo("purple");
+        }
+
+        @Test
+        void shouldShowDifferencesGivenUnorderedIds() {
+            when(TERRAFORM_STATE_DAO.findById(1L)).thenReturn(Optional.of(STATE_1));
+            when(TERRAFORM_STATE_DAO.findById(2L)).thenReturn(Optional.of(STATE_2));
+            when(TERRAFORM_STATE_DAO.findContentById(1L)).thenReturn(Optional.of(STATE_1.getContent()));
+            when(TERRAFORM_STATE_DAO.findContentById(2L)).thenReturn(Optional.of(STATE_2.getContent()));
+
+            var response = APP.client().target("/states/diff/{a}/{b}")
+                    .resolveTemplate("a", 2L)
+                    .resolveTemplate("b", 1L)
+                    .request()
+                    .get();
+
+            assertOkResponse(response);
+
+            var stringListMap = response.readEntity(new GenericType<Map<String, List<String>>>(){});
+
+            assertThat(stringListMap).size().isEqualTo(2);
+            assertThat(stringListMap.get("hello").get(0)).isEqualTo("world");
+            assertThat(stringListMap.get("hello").get(1)).isEqualTo("Chris");
+            assertThat(stringListMap.get("color").get(0)).isNull();
+            assertThat(stringListMap.get("color").get(1)).isEqualTo("purple");
+        }
+
+        @Test
+        void shouldReturn500IfStateNotFound() {
+            when(TERRAFORM_STATE_DAO.findById(1L)).thenReturn(Optional.empty());
+
+            var response = APP.client().target("/states/diff/{a}/{b}")
+                    .resolveTemplate("a", 1L)
+                    .resolveTemplate("b", 2L)
+                    .request()
+                    .get();
+
+            assertInternalServerErrorResponse(response);
         }
     }
 }

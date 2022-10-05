@@ -9,11 +9,11 @@ import com.fortitudetec.foreground.model.TerraformState;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.kiwiproject.json.JsonHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -32,9 +32,11 @@ import javax.ws.rs.core.UriInfo;
 public class StateResource {
 
     private final TerraformStateDao terraformStateDao;
+    private final JsonHelper jsonHelper;
 
-    public StateResource(TerraformStateDao terraformStateDao) {
+    public StateResource(TerraformStateDao terraformStateDao, JsonHelper jsonHelper) {
         this.terraformStateDao = terraformStateDao;
+        this.jsonHelper = jsonHelper;
     }
 
     @GET
@@ -66,7 +68,7 @@ public class StateResource {
         uriBuilder.path(Long.toString(id));
 
         var savedState = terraformStateDao.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Unable to find inserted terraform state"));
+                .orElseThrow(() -> new IllegalStateException(String.format("Unable to find inserted terraform state for id: %d", id)));
 
         return standardPostResponse(uriBuilder.build(), savedState);
     }
@@ -84,5 +86,20 @@ public class StateResource {
     public Response getContent(@PathParam("id") Long id) {
         var content = terraformStateDao.findContentById(id);
         return standardGetResponse(content, "Unable to find terraform state");
+    }
+
+    @GET
+    @Path("/diff/{a}/{b}")
+    public Response diffTwoIds(@PathParam("a") Long a, @PathParam("b") Long b) {
+        var uploadedAtA = terraformStateDao.findById(a).orElseThrow().getUploadedAt();
+        var uploadedAtB = terraformStateDao.findById(b).orElseThrow().getUploadedAt();
+        var contentA = terraformStateDao.findContentById(a).orElseThrow();
+        var contentB = terraformStateDao.findContentById(b).orElseThrow();
+
+        var stringListMap = uploadedAtA.isBefore(uploadedAtB)
+                ? jsonHelper.jsonDiff(contentA, contentB)
+                : jsonHelper.jsonDiff(contentB, contentA);
+
+        return standardGetResponse(stringListMap, "can't happen");
     }
 }

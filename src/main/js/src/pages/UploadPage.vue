@@ -42,7 +42,6 @@
 
 <script>
 import { useQuasar } from 'quasar';
-import { api } from 'boot/axios';
 import { ref } from 'vue';
 import { DateTime } from 'luxon';
 
@@ -93,7 +92,7 @@ export default {
       return DateTime.fromMillis(val * 1000).toISO();
     },
     getStates() {
-      api.get('/states')
+      this.$api.get('/states')
         .then((response) => {
           this.data = response.data;
         });
@@ -115,12 +114,11 @@ export default {
         },
         persistent: true,
       }).onOk(() => {
-        api.delete(`/states/${row.id}`)
+        this.$api.delete(`/states/${row.id}`)
           .then(() => this.getStates());
       });
     },
     handleFileUpload() {
-      console.log(this.fileToUpload);
       const formData = new FormData();
       formData.append('name', this.fileToUpload.name);
       formData.append('file', this.fileToUpload);
@@ -131,7 +129,7 @@ export default {
         },
       };
 
-      api.post(
+      this.$api.post(
         '/states',
         formData,
         config,

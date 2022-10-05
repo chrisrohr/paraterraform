@@ -8,7 +8,12 @@ installQuasarPlugin();
 describe('UploadPage', () => {
   const wrapper = mount(UploadPage,{
     global: {
-      provide: qLayoutInjections()
+      provide: qLayoutInjections(),
+      mocks: {
+        '$api': {
+          get: async () => ({ data: []})
+        }
+      }
     },
   });
 

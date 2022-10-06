@@ -5,7 +5,7 @@
       <h3>Upload Page</h3>
     </div>
     <div class="row flex flex-center">
-      <q-file v-model="fileToUpload" dense outlined accept=".tf" />
+      <q-file v-model="fileToUpload" dense outlined accept=".tf" style="width: 30%"/>
       <q-btn push color="primary" round icon="file_upload" @click="handleFileUpload" />
     </div>
 
@@ -119,6 +119,11 @@ export default {
       });
     },
     handleFileUpload() {
+      if (this.fileToUpload === null) {
+        this.q.notify('Please select file to upload');
+        return;
+      }
+
       const formData = new FormData();
       formData.append('name', this.fileToUpload.name);
       formData.append('file', this.fileToUpload);

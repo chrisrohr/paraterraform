@@ -1,6 +1,7 @@
 package com.fortitudetec.foreground.resource;
 
 import static javax.ws.rs.client.Entity.entity;
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kiwiproject.collect.KiwiLists.first;
 import static org.kiwiproject.test.constants.KiwiTestConstants.JSON_HELPER;
@@ -304,6 +305,36 @@ class StateResourceTest {
                     .get();
 
             assertInternalServerErrorResponse(response);
+        }
+    }
+
+    @Nested
+    class GetContent {
+
+        @Test
+        void shouldReturnTheContentJsonWhenFound() {
+            when(TERRAFORM_STATE_DAO.findContentById(1L)).thenReturn(Optional.of("{}"));
+
+            var response = APP.client().target("/states/{id}/content")
+                    .resolveTemplate("id", 1L)
+                    .request()
+                    .get();
+
+            assertOkResponse(response);
+
+            assertThat(response.readEntity(String.class)).isEqualTo("{}");
+        }
+
+        @Test
+        void shouldReturn404WhenContentNotFound() {
+            when(TERRAFORM_STATE_DAO.findContentById(1L)).thenReturn(Optional.empty());
+
+            var response = APP.client().target("/states/{id}/content")
+                    .resolveTemplate("id", 1L)
+                    .request()
+                    .get();
+
+            assertNotFoundResponse(response);
         }
     }
 }

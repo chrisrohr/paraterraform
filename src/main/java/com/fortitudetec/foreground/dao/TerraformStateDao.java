@@ -1,5 +1,6 @@
 package com.fortitudetec.foreground.dao;
 
+import com.fortitudetec.foreground.dao.mapper.SlimTerraformMapper;
 import com.fortitudetec.foreground.dao.mapper.TerraformStateMapper;
 import com.fortitudetec.foreground.model.TerraformState;
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
@@ -17,6 +18,11 @@ public interface TerraformStateDao {
 
     @SqlQuery("select id, name, uploaded_at from terraform_states")
     List<TerraformState> list();
+
+    @RegisterRowMapper(SlimTerraformMapper.class)
+    @SqlQuery("SELECT MAX(uploaded_at) as uploaded_at, name " +
+            "from terraform_states group by name;")
+    List<TerraformState> listMostRecentOfEachFile();
 
     @SqlQuery("select id, name, uploaded_at from terraform_states where id = :id")
     Optional<TerraformState> findById(@Bind("id") Long id);

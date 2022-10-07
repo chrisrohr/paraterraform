@@ -46,12 +46,40 @@ public class StateResource {
     }
 
     @GET
+    @Path("/recent")
+    public Response listMostRecentOfEachFile() {
+        var states = terraformStateDao.listMostRecentOfEachFile();
+        return Response.ok(states).build();
+    }
+
+    @GET
     @Path("/{id}")
     public Response get(@PathParam("id") Long id) {
         var state = terraformStateDao.findById(id);
         return standardGetResponse(state, "Unable to find terraform state");
     }
 
+    @GET
+    @Path("/{id}/content")
+    public Response getContent(@PathParam("id") Long id) {
+        var content = terraformStateDao.findContentById(id);
+        return standardGetResponse(content, "Unable to find terraform state");
+    }
+
+    @GET
+    @Path("/diff/{a}/{b}")
+    public Response diffTwoIds(@PathParam("a") Long a, @PathParam("b") Long b) {
+        var uploadedAtA = terraformStateDao.findById(a).orElseThrow().getUploadedAt();
+        var uploadedAtB = terraformStateDao.findById(b).orElseThrow().getUploadedAt();
+        var contentA = terraformStateDao.findContentById(a).orElseThrow();
+        var contentB = terraformStateDao.findContentById(b).orElseThrow();
+
+        var stringListMap = uploadedAtA.isBefore(uploadedAtB)
+                ? jsonHelper.jsonDiff(contentA, contentB)
+                : jsonHelper.jsonDiff(contentB, contentA);
+
+        return standardGetResponse(stringListMap, "can't happen");
+    }
 
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -81,25 +109,4 @@ public class StateResource {
         return standardDeleteResponse();
     }
 
-    @GET
-    @Path("/{id}/content")
-    public Response getContent(@PathParam("id") Long id) {
-        var content = terraformStateDao.findContentById(id);
-        return standardGetResponse(content, "Unable to find terraform state");
-    }
-
-    @GET
-    @Path("/diff/{a}/{b}")
-    public Response diffTwoIds(@PathParam("a") Long a, @PathParam("b") Long b) {
-        var uploadedAtA = terraformStateDao.findById(a).orElseThrow().getUploadedAt();
-        var uploadedAtB = terraformStateDao.findById(b).orElseThrow().getUploadedAt();
-        var contentA = terraformStateDao.findContentById(a).orElseThrow();
-        var contentB = terraformStateDao.findContentById(b).orElseThrow();
-
-        var stringListMap = uploadedAtA.isBefore(uploadedAtB)
-                ? jsonHelper.jsonDiff(contentA, contentB)
-                : jsonHelper.jsonDiff(contentB, contentA);
-
-        return standardGetResponse(stringListMap, "can't happen");
-    }
 }

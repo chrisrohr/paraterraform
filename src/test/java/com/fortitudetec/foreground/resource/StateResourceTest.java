@@ -86,6 +86,34 @@ class StateResourceTest {
     }
 
     @Nested
+    class GetListRecent {
+
+        @Test
+        void shouldReturnAListOfRecentTerraformStates() {
+            var state = TerraformState.builder()
+                    .id(1L)
+                    .name("Dev")
+                    .content("{}")
+                    .uploadedAt(Instant.now())
+                    .build();
+
+            when(TERRAFORM_STATE_DAO.listMostRecentOfEachFile()).thenReturn(List.of(state));
+
+            var response = APP.client().target("/states/recent")
+                    .request()
+                    .get();
+
+            assertOkResponse(response);
+
+            var listOfStates = response.readEntity(new GenericType<List<TerraformState>>(){});
+            var returnedState = first(listOfStates);
+            assertThat(returnedState)
+                    .usingRecursiveComparison()
+                    .isEqualTo(state);
+        }
+    }
+
+    @Nested
     class Get {
 
         @Test

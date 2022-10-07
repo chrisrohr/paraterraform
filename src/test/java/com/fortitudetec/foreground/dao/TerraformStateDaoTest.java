@@ -1,7 +1,9 @@
 package com.fortitudetec.foreground.dao;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.kiwiproject.collect.KiwiLists.first;
 
 import com.fortitudetec.foreground.model.TerraformState;
@@ -15,6 +17,9 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.kiwiproject.test.junit.jupiter.Jdbi3DaoExtension;
 import org.kiwiproject.test.junit.jupiter.PostgresLiquibaseTestExtension;
 import org.postgresql.util.PSQLException;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 @DisplayName("TerraformStateDao")
 class TerraformStateDaoTest {
@@ -48,6 +53,16 @@ class TerraformStateDaoTest {
                 .first();
     }
 
+    private long saveTestTerraformStateRecord(String name, String content, Instant uploadedAt) {
+        return handle.createUpdate("insert into terraform_states (name, content, uploaded_at) values (:name, :content, :uploadedAt)")
+                .bind("name", name)
+                .bind("content", content)
+                .bind("uploadedAt", uploadedAt)
+                .executeAndReturnGeneratedKeys("id")
+                .mapTo(Long.class)
+                .first();
+    }
+
     @Nested
     class List {
 
@@ -61,6 +76,42 @@ class TerraformStateDaoTest {
             assertThat(state.getName()).isEqualTo("Sample state");
             assertThat(state.getContent()).isBlank();
             assertThat(first(states).getUploadedAt()).isNotNull();
+        }
+    }
+
+    @Nested
+    class ListRecent {
+
+        @Test
+        void shouldReturnTheListOfRecentTerraformStates() {
+
+            var uploadInstant1 = Instant.now().minusSeconds(120);
+            var uploadInstant2 = Instant.now();
+
+            saveTestTerraformStateRecord("Sample state", "original content", uploadInstant1);
+            saveTestTerraformStateRecord("Sample state", "updated content", uploadInstant2);
+
+            var recentStates = dao.listMostRecentOfEachFile();
+
+            var stateToVerify = first(recentStates);
+            assertThat(stateToVerify.getName()).isEqualTo("Sample state");
+            assertThat(stateToVerify.getUploadedAt()).isCloseTo(uploadInstant2, within(1, ChronoUnit.MILLIS));
+        }
+
+        @Test
+        void shouldReturnTheListOfRecentTerraformStatesWithInsertOrderSwitched() {
+
+            var uploadInstant1 = Instant.now();
+            var uploadInstant2 = Instant.now().minusSeconds(120);
+
+            saveTestTerraformStateRecord("Sample state", "original content", uploadInstant1);
+            saveTestTerraformStateRecord("Sample state", "updated content", uploadInstant2);
+
+            var recentStates = dao.listMostRecentOfEachFile();
+
+            var stateToVerify = first(recentStates);
+            assertThat(stateToVerify.getName()).isEqualTo("Sample state");
+            assertThat(stateToVerify.getUploadedAt()).isCloseTo(uploadInstant1, within(1, ChronoUnit.MILLIS));
         }
     }
 

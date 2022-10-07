@@ -5,7 +5,12 @@
       <h3>Upload Page</h3>
     </div>
     <div class="row flex flex-center">
-      <q-file v-model="fileToUpload" dense outlined accept=".tf" style="width: 30%"/>
+      <q-file v-model="fileToUpload" dense
+              outlined
+              accept=".tf"
+              style="width: 30%"
+              placeholder="Upload State File"
+              />
       <q-btn push color="primary" round icon="file_upload" @click="handleFileUpload" />
     </div>
 
@@ -75,9 +80,7 @@ export default {
         },
       ],
       data: [],
-      selectedFile: false,
-      uploaderLabel: 'Select a File',
-      showUploadButton: false,
+      needsFile: false,
       fileToUpload: ref(null),
     };
   },

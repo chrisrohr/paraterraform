@@ -7,7 +7,14 @@ installQuasarPlugin();
 
 describe('HistoryPage', () => {
   const wrapper = mount(HistoryPage,{
-    global: { provide: qLayoutInjections() },
+    global: {
+      provide: qLayoutInjections(),
+      mocks: {
+        '$api': {
+          get: async () => ({ latestStates: []})
+        }
+      }
+    },
   });
 
   it('mounts without errors', () => {
@@ -17,4 +24,5 @@ describe('HistoryPage', () => {
   it('contains the required markup', () => {
     expect(wrapper.html()).toContain("History Page");
   });
+
 })

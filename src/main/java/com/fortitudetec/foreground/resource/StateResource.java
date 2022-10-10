@@ -41,34 +41,41 @@ public class StateResource {
 
     @GET
     public Response list() {
-        var states = terraformStateDao.list();
+        var states = terraformStateDao.find();
         return Response.ok(states).build();
     }
 
     @GET
-    @Path("/recent")
-    public Response listMostRecentOfEachFile() {
-        var states = terraformStateDao.listMostRecentOfEachFile();
+    @Path("/latest")
+    public Response listLatestStates() {
+        var states = terraformStateDao.findLatestStates();
         return Response.ok(states).build();
+    }
+
+    @GET
+    @Path("/{name}/history")
+    public Response listStateHistoryByName(@PathParam("name") String name) {
+        var state = terraformStateDao.findStateHistoryByName(name);
+        return standardGetResponse(state, "Unable to find terraform state");
     }
 
     @GET
     @Path("/{id}")
-    public Response get(@PathParam("id") Long id) {
+    public Response getById(@PathParam("id") Long id) {
         var state = terraformStateDao.findById(id);
         return standardGetResponse(state, "Unable to find terraform state");
     }
 
     @GET
     @Path("/{id}/content")
-    public Response getContent(@PathParam("id") Long id) {
+    public Response getContentById(@PathParam("id") Long id) {
         var content = terraformStateDao.findContentById(id);
         return standardGetResponse(content, "Unable to find terraform state");
     }
 
     @GET
-    @Path("/diff/{a}/{b}")
-    public Response diffTwoIds(@PathParam("a") Long a, @PathParam("b") Long b) {
+    @Path("/{a}/diff/{b}")
+    public Response diffTwoContentsByIds(@PathParam("a") Long a, @PathParam("b") Long b) {
         var uploadedAtA = terraformStateDao.findById(a).orElseThrow().getUploadedAt();
         var uploadedAtB = terraformStateDao.findById(b).orElseThrow().getUploadedAt();
         var contentA = terraformStateDao.findContentById(a).orElseThrow();

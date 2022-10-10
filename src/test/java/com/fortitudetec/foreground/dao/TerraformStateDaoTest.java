@@ -3,7 +3,6 @@ package com.fortitudetec.foreground.dao;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.tuple;
 import static org.kiwiproject.collect.KiwiLists.first;
 
 import com.fortitudetec.foreground.model.TerraformState;
@@ -70,7 +69,7 @@ class TerraformStateDaoTest {
         void shouldReturnTheEntireListOfTerraformStates() {
             saveTestTerraformStateRecord("Sample state", "{}");
 
-            var states = dao.list();
+            var states = dao.find();
 
             var state = first(states);
             assertThat(state.getName()).isEqualTo("Sample state");
@@ -80,7 +79,7 @@ class TerraformStateDaoTest {
     }
 
     @Nested
-    class ListRecent {
+    class ListLatest {
 
         @Test
         void shouldReturnTheListOfRecentTerraformStates() {
@@ -91,7 +90,7 @@ class TerraformStateDaoTest {
             saveTestTerraformStateRecord("Sample state", "original content", uploadInstant1);
             saveTestTerraformStateRecord("Sample state", "updated content", uploadInstant2);
 
-            var recentStates = dao.listMostRecentOfEachFile();
+            var recentStates = dao.findLatestStates();
 
             var stateToVerify = first(recentStates);
             assertThat(stateToVerify.getName()).isEqualTo("Sample state");
@@ -107,11 +106,18 @@ class TerraformStateDaoTest {
             saveTestTerraformStateRecord("Sample state", "original content", uploadInstant1);
             saveTestTerraformStateRecord("Sample state", "updated content", uploadInstant2);
 
-            var recentStates = dao.listMostRecentOfEachFile();
+            var recentStates = dao.findLatestStates();
 
             var stateToVerify = first(recentStates);
             assertThat(stateToVerify.getName()).isEqualTo("Sample state");
             assertThat(stateToVerify.getUploadedAt()).isCloseTo(uploadInstant1, within(1, ChronoUnit.MILLIS));
+        }
+
+        @Test
+        void shouldReturnEmptyListWhenNoRecordFound() {
+            var state = dao.findLatestStates();
+
+            assertThat(state).isEmpty();
         }
     }
 
@@ -133,6 +139,30 @@ class TerraformStateDaoTest {
         @Test
         void shouldReturnOptionalEmptyWhenNoRecordFound() {
             var state = dao.findById(1L);
+
+            assertThat(state).isEmpty();
+        }
+    }
+
+    @Nested
+    class ListStateHistoryByName {
+
+        @Test
+        void shouldReturnTerraformStateWithGivenName() {
+            saveTestTerraformStateRecord("First State", "{}");
+            saveTestTerraformStateRecord("First State", "{}");
+            saveTestTerraformStateRecord("Second State", "{}");
+
+            var firstStateList = dao.findStateHistoryByName("First State");
+            var secondStateList = dao.findStateHistoryByName("Second State");
+
+            assertThat(firstStateList).hasSize(2).extracting("name").containsOnly("First State");
+            assertThat(secondStateList).hasSize(1).extracting("name").containsOnly("Second State");
+        }
+
+        @Test
+        void shouldReturnEmptyListWhenNoRecordFound() {
+            var state = dao.findStateHistoryByName("Non existent state");
 
             assertThat(state).isEmpty();
         }

@@ -1,7 +1,6 @@
 package com.fortitudetec.foreground.resource;
 
 import static javax.ws.rs.client.Entity.entity;
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kiwiproject.collect.KiwiLists.first;
 import static org.kiwiproject.test.constants.KiwiTestConstants.JSON_HELPER;
@@ -70,7 +69,7 @@ class StateResourceTest {
                     .uploadedAt(Instant.now())
                     .build();
 
-            when(TERRAFORM_STATE_DAO.list()).thenReturn(List.of(state));
+            when(TERRAFORM_STATE_DAO.find()).thenReturn(List.of(state));
 
             var response = APP.client().target("/states")
                     .request()
@@ -87,10 +86,39 @@ class StateResourceTest {
     }
 
     @Nested
-    class GetListRecent {
+    class GetListHistoryByName {
 
         @Test
-        void shouldReturnAListOfRecentTerraformStates() {
+        void shouldReturnAListOfHistoryByNameTerraformStates() {
+            var firstState = TerraformState.builder()
+                    .id(1L)
+                    .name("Dev")
+                    .content("{}")
+                    .uploadedAt(Instant.now())
+                    .build();
+
+            when(TERRAFORM_STATE_DAO.findStateHistoryByName("Dev")).thenReturn(List.of(firstState));
+
+            var response = APP.client().target("/states/{name}/history")
+                    .resolveTemplate("name", "Dev")
+                    .request()
+                    .get();
+
+            assertOkResponse(response);
+
+            var listOfStates = response.readEntity(new GenericType<List<TerraformState>>(){});
+            var returnedState = first(listOfStates);
+            assertThat(returnedState)
+                    .usingRecursiveComparison()
+                    .isEqualTo(firstState);
+        }
+    }
+
+    @Nested
+    class GetListLatest {
+
+        @Test
+        void shouldReturnAListOfLatestTerraformStates() {
             var state = TerraformState.builder()
                     .id(1L)
                     .name("Dev")
@@ -98,9 +126,9 @@ class StateResourceTest {
                     .uploadedAt(Instant.now())
                     .build();
 
-            when(TERRAFORM_STATE_DAO.listMostRecentOfEachFile()).thenReturn(List.of(state));
+            when(TERRAFORM_STATE_DAO.findLatestStates()).thenReturn(List.of(state));
 
-            var response = APP.client().target("/states/recent")
+            var response = APP.client().target("/states/latest")
                     .request()
                     .get();
 
@@ -253,7 +281,7 @@ class StateResourceTest {
             when(TERRAFORM_STATE_DAO.findContentById(1L)).thenReturn(Optional.of(STATE_1.getContent()));
             when(TERRAFORM_STATE_DAO.findContentById(2L)).thenReturn(Optional.of(STATE_2.getContent()));
 
-            var response = APP.client().target("/states/diff/{a}/{b}")
+            var response = APP.client().target("/states/{a}/diff/{b}")
                     .resolveTemplate("a", 1L)
                     .resolveTemplate("b", 2L)
                     .request()
@@ -277,7 +305,7 @@ class StateResourceTest {
             when(TERRAFORM_STATE_DAO.findContentById(1L)).thenReturn(Optional.of(STATE_1.getContent()));
             when(TERRAFORM_STATE_DAO.findContentById(2L)).thenReturn(Optional.of(STATE_2.getContent()));
 
-            var response = APP.client().target("/states/diff/{a}/{b}")
+            var response = APP.client().target("/states/{a}/diff/{b}")
                     .resolveTemplate("a", 2L)
                     .resolveTemplate("b", 1L)
                     .request()
@@ -298,7 +326,7 @@ class StateResourceTest {
         void shouldReturn500IfStateNotFound() {
             when(TERRAFORM_STATE_DAO.findById(1L)).thenReturn(Optional.empty());
 
-            var response = APP.client().target("/states/diff/{a}/{b}")
+            var response = APP.client().target("/states/{a}/diff/{b}")
                     .resolveTemplate("a", 1L)
                     .resolveTemplate("b", 2L)
                     .request()

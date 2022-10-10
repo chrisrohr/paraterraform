@@ -16,13 +16,15 @@ import java.util.Optional;
 @RegisterRowMapper(TerraformStateMapper.class)
 public interface TerraformStateDao {
 
-    @SqlQuery("select id, name, uploaded_at from terraform_states")
-    List<TerraformState> list();
+    @SqlQuery("select id, name, uploaded_at from terraform_states order by uploaded_at desc")
+    List<TerraformState> find();
 
     @RegisterRowMapper(SlimTerraformMapper.class)
-    @SqlQuery("SELECT MAX(uploaded_at) as uploaded_at, name " +
-            "from terraform_states group by name;")
-    List<TerraformState> listMostRecentOfEachFile();
+    @SqlQuery("select max(uploaded_at) as uploaded_at, name from terraform_states group by name order by uploaded_at desc")
+    List<TerraformState> findLatestStates();
+
+    @SqlQuery("select id, name, uploaded_at from terraform_states where name = :name order by uploaded_at desc")
+    List<TerraformState> findStateHistoryByName(@Bind("name") String name);
 
     @SqlQuery("select id, name, uploaded_at from terraform_states where id = :id")
     Optional<TerraformState> findById(@Bind("id") Long id);

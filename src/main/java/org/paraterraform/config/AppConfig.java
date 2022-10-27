@@ -1,4 +1,4 @@
-package com.fortitudetec.foreground.config;
+package org.paraterraform.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;

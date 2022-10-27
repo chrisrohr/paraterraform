@@ -1,4 +1,4 @@
-# Foreground (foreground)
+# Paraterraform
 
 Visualization for Terraform state management
 

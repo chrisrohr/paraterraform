@@ -1,11 +1,10 @@
-package com.fortitudetec.foreground.dao;
+package org.paraterraform.dao;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.within;
 import static org.kiwiproject.collect.KiwiLists.first;
 
-import com.fortitudetec.foreground.model.TerraformState;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.kiwiproject.test.junit.jupiter.Jdbi3DaoExtension;
 import org.kiwiproject.test.junit.jupiter.PostgresLiquibaseTestExtension;
+import org.paraterraform.model.TerraformState;
 import org.postgresql.util.PSQLException;
 
 import java.time.Instant;

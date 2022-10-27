@@ -1,16 +1,16 @@
-package com.fortitudetec.foreground;
+package org.paraterraform;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kiwiproject.test.dropwizard.app.DropwizardAppTests.healthCheckNamesOf;
 import static org.kiwiproject.test.dropwizard.app.DropwizardAppTests.registeredResourceClassesOf;
 
-import com.fortitudetec.foreground.config.AppConfig;
-import com.fortitudetec.foreground.resource.StateResource;
 import io.dropwizard.testing.junit5.DropwizardAppExtension;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.kiwiproject.test.dropwizard.app.PostgresAppTestExtension;
+import org.paraterraform.config.AppConfig;
+import org.paraterraform.resource.StateResource;
 
 @DisplayName("App")
 class AppTest {

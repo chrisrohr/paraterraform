@@ -1,15 +1,15 @@
-package com.fortitudetec.foreground.resource;
+package org.paraterraform.resource;
 
 import static org.kiwiproject.jaxrs.KiwiStandardResponses.standardDeleteResponse;
 import static org.kiwiproject.jaxrs.KiwiStandardResponses.standardGetResponse;
 import static org.kiwiproject.jaxrs.KiwiStandardResponses.standardPostResponse;
 
-import com.fortitudetec.foreground.dao.TerraformStateDao;
-import com.fortitudetec.foreground.model.TerraformState;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.kiwiproject.json.JsonHelper;
+import org.paraterraform.dao.TerraformStateDao;
+import org.paraterraform.model.TerraformState;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +30,8 @@ import javax.ws.rs.core.UriInfo;
 @Produces(MediaType.APPLICATION_JSON)
 @Slf4j
 public class StateResource {
+
+    private static final String NOT_FOUND_MESSAGE = "Unable to find terraform state";
 
     private final TerraformStateDao terraformStateDao;
     private final JsonHelper jsonHelper;
@@ -56,21 +58,21 @@ public class StateResource {
     @Path("/{name}/history")
     public Response listStateHistoryByName(@PathParam("name") String name) {
         var state = terraformStateDao.findStateHistoryByName(name);
-        return standardGetResponse(state, "Unable to find terraform state");
+        return standardGetResponse(state, NOT_FOUND_MESSAGE);
     }
 
     @GET
     @Path("/{id}")
     public Response getById(@PathParam("id") Long id) {
         var state = terraformStateDao.findById(id);
-        return standardGetResponse(state, "Unable to find terraform state");
+        return standardGetResponse(state, NOT_FOUND_MESSAGE);
     }
 
     @GET
     @Path("/{id}/content")
     public Response getContentById(@PathParam("id") Long id) {
         var content = terraformStateDao.findContentById(id);
-        return standardGetResponse(content, "Unable to find terraform state");
+        return standardGetResponse(content, NOT_FOUND_MESSAGE);
     }
 
     @GET

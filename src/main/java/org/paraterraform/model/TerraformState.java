@@ -1,4 +1,4 @@
-package com.fortitudetec.foreground.model;
+package org.paraterraform.model;
 
 import lombok.Builder;
 import lombok.Value;

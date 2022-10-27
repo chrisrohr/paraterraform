@@ -1,10 +1,7 @@
-package com.fortitudetec.foreground;
+package org.paraterraform;
 
 import static org.kiwiproject.json.JsonHelper.newDropwizardJsonHelper;
 
-import com.fortitudetec.foreground.config.AppConfig;
-import com.fortitudetec.foreground.dao.TerraformStateDao;
-import com.fortitudetec.foreground.resource.StateResource;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.db.DataSourceFactory;
@@ -14,6 +11,9 @@ import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.paraterraform.config.AppConfig;
+import org.paraterraform.dao.TerraformStateDao;
+import org.paraterraform.resource.StateResource;
 
 import java.util.EnumSet;
 import javax.servlet.DispatcherType;
@@ -46,7 +46,7 @@ public class App extends Application<AppConfig> {
         configureCors(environment);
 
         final var factory = new JdbiFactory();
-        final var jdbi = factory.build(environment, appConfig.getDataSourceFactory(), "foreground-datasource");
+        final var jdbi = factory.build(environment, appConfig.getDataSourceFactory(), "paraterraform-datasource");
 
         var terraformStateDao = jdbi.onDemand(TerraformStateDao.class);
 

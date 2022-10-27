@@ -1,8 +1,8 @@
 {
-  "name": "foreground",
+  "name": "paraterraform",
   "version": "0.0.1",
   "description": "Visualization for Terraform state management",
-  "productName": "Foreground",
+  "productName": "Paraterraform",
   "author": " ",
   "private": true,
   "scripts": {

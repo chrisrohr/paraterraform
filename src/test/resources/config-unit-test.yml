@@ -1,6 +1,6 @@
 database:
   driverClass: org.postgresql.Driver
-  url: jdbc:postgresql://foo.test:5432/foreground
+  url: jdbc:postgresql://foo.test:5432/paraterraform
   user: postgres
   password:
 

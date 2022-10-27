@@ -1,4 +1,4 @@
-package com.fortitudetec.foreground.resource;
+package org.paraterraform.resource;
 
 import static javax.ws.rs.client.Entity.entity;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,8 +15,6 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.fortitudetec.foreground.dao.TerraformStateDao;
-import com.fortitudetec.foreground.model.TerraformState;
 import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
 import io.dropwizard.testing.junit5.ResourceExtension;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
@@ -30,6 +28,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.kiwiproject.jaxrs.exception.JaxrsExceptionMapper;
 import org.kiwiproject.test.util.Fixtures;
 import org.mockito.ArgumentCaptor;
+import org.paraterraform.dao.TerraformStateDao;
+import org.paraterraform.model.TerraformState;
 
 import java.io.IOException;
 import java.time.Instant;

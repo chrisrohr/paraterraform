@@ -1,14 +1,14 @@
-package com.fortitudetec.foreground.dao;
+package org.paraterraform.dao;
 
-import com.fortitudetec.foreground.dao.mapper.SlimTerraformMapper;
-import com.fortitudetec.foreground.dao.mapper.TerraformStateMapper;
-import com.fortitudetec.foreground.model.TerraformState;
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
+import org.paraterraform.dao.mapper.SlimTerraformMapper;
+import org.paraterraform.dao.mapper.TerraformStateMapper;
+import org.paraterraform.model.TerraformState;
 
 import java.util.List;
 import java.util.Optional;

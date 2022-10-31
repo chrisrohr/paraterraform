@@ -25,4 +25,29 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="2-create-state-lock-table" author="chrisrohr">
+        <createTable tableName="state_locks">
+            <column name="id" type="text">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="state_name" type="text">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="operation" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="info" type="text"/>
+            <column name="locked_by" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp without time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="path" type="text"/>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

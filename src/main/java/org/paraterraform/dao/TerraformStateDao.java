@@ -23,6 +23,9 @@ public interface TerraformStateDao {
     @SqlQuery("select max(uploaded_at) as uploaded_at, name from terraform_states group by name order by uploaded_at desc")
     List<TerraformState> findLatestStates();
 
+    @SqlQuery("select content from terraform_states where name = :name order by uploaded_at desc limit 1")
+    Optional<String> findLatestStateContentByName(@Bind("name") String name);
+
     @SqlQuery("select id, name, uploaded_at from terraform_states where name = :name order by uploaded_at desc")
     List<TerraformState> findStateHistoryByName(@Bind("name") String name);
 
@@ -38,4 +41,7 @@ public interface TerraformStateDao {
 
     @SqlUpdate("delete from terraform_states where id = :id")
     int deleteById(@Bind("id") Long id);
+
+    @SqlUpdate("delete from terraform_states where name = :name")
+    int deleteByName(@Bind("name") String name);
 }

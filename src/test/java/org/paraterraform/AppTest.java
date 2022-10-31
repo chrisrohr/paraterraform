@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.kiwiproject.test.dropwizard.app.PostgresAppTestExtension;
 import org.paraterraform.config.AppConfig;
 import org.paraterraform.resource.StateResource;
+import org.paraterraform.resource.TerraformBackendResource;
 
 @DisplayName("App")
 class AppTest {
@@ -24,7 +25,8 @@ class AppTest {
     @Test
     void shouldRegisterResources() {
         assertThat(registeredResourceClassesOf(APP)).contains(
-                StateResource.class
+                StateResource.class,
+                TerraformBackendResource.class
         );
     }
 

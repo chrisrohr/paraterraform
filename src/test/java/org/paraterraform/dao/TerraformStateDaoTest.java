@@ -52,9 +52,9 @@ class TerraformStateDaoTest {
                 .first();
     }
 
-    private long saveTestTerraformStateRecord(String name, String content, Instant uploadedAt) {
-        return handle.createUpdate("insert into terraform_states (name, content, uploaded_at) values (:name, :content, :uploadedAt)")
-                .bind("name", name)
+    private void saveTestTerraformStateRecord(String content, Instant uploadedAt) {
+        handle.createUpdate("insert into terraform_states (name, content, uploaded_at) values (:name, :content, :uploadedAt)")
+                .bind("name", "Sample state")
                 .bind("content", content)
                 .bind("uploadedAt", uploadedAt)
                 .executeAndReturnGeneratedKeys("id")
@@ -87,8 +87,8 @@ class TerraformStateDaoTest {
             var uploadInstant1 = Instant.now().minusSeconds(120);
             var uploadInstant2 = Instant.now();
 
-            saveTestTerraformStateRecord("Sample state", "original content", uploadInstant1);
-            saveTestTerraformStateRecord("Sample state", "updated content", uploadInstant2);
+            saveTestTerraformStateRecord("original content", uploadInstant1);
+            saveTestTerraformStateRecord("updated content", uploadInstant2);
 
             var recentStates = dao.findLatestStates();
 
@@ -103,8 +103,8 @@ class TerraformStateDaoTest {
             var uploadInstant1 = Instant.now();
             var uploadInstant2 = Instant.now().minusSeconds(120);
 
-            saveTestTerraformStateRecord("Sample state", "original content", uploadInstant1);
-            saveTestTerraformStateRecord("Sample state", "updated content", uploadInstant2);
+            saveTestTerraformStateRecord("original content", uploadInstant1);
+            saveTestTerraformStateRecord("updated content", uploadInstant2);
 
             var recentStates = dao.findLatestStates();
 
@@ -117,6 +117,29 @@ class TerraformStateDaoTest {
         void shouldReturnEmptyListWhenNoRecordFound() {
             var state = dao.findLatestStates();
 
+            assertThat(state).isEmpty();
+        }
+    }
+
+    @Nested
+    class FindLatestStateByName {
+
+        @Test
+        void shouldReturnFoundTerraformState() {
+            var uploadInstant1 = Instant.now().minusSeconds(120);
+            var uploadInstant2 = Instant.now();
+
+            saveTestTerraformStateRecord("original content", uploadInstant1);
+            saveTestTerraformStateRecord("updated content", uploadInstant2);
+
+            var content = dao.findLatestStateContentByName("Sample state").orElseThrow();
+
+            assertThat(content).isEqualTo("updated content");
+        }
+
+        @Test
+        void shouldReturnOptionalEmptyWhenNotFound() {
+            var state = dao.findLatestStateContentByName("foo");
             assertThat(state).isEmpty();
         }
     }

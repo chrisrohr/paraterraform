@@ -10,10 +10,11 @@
 
     <properties>
         <!-- Required dependencies -->
+        <commons-io.version>2.11.0</commons-io.version>
         <dropwizard.version>2.1.3</dropwizard.version>
-        <h2.version>2.1.214</h2.version>
         <jdbi3.version>3.32.0</jdbi3.version>
         <kiwi.version>2.3.0</kiwi.version>
+        <postgresql.version>42.5.0</postgresql.version>
 
         <!-- Versions for provided dependencies -->
         <lombok.version>1.18.24</lombok.version>
@@ -81,6 +82,11 @@
     <dependencies>
         <!-- Required dependencies -->
         <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>
+        <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-assets</artifactId>
         </dependency>
@@ -88,6 +94,12 @@
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.yaml</groupId>
+                    <artifactId>snakeyaml</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -98,6 +110,12 @@
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-jdbi3</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -106,15 +124,21 @@
         </dependency>
 
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>${h2.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.kiwiproject</groupId>
             <artifactId>kiwi</artifactId>
             <version>${kiwi.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
         </dependency>
 
         <!-- provided dependencies -->
@@ -145,12 +169,26 @@
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-testing</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>io.zonky.test</groupId>
             <artifactId>embedded-postgres</artifactId>
             <version>${embedded-postgres.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -194,6 +232,13 @@
             <groupId>org.kiwiproject</groupId>
             <artifactId>kiwi-test</artifactId>
             <version>${kiwi-test.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

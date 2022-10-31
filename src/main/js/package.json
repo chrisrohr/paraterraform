@@ -37,7 +37,7 @@
     "@quasar/app-vite": "^1.0.0",
     "@quasar/babel-preset-app": "^2.0.1",
     "@quasar/quasar-app-extension-testing": "^2.0.4",
-    "@quasar/quasar-app-extension-testing-e2e-cypress": "^4.2.1",
+    "@quasar/quasar-app-extension-testing-e2e-cypress": "^4.2.2",
     "@quasar/quasar-app-extension-testing-unit-jest": "^3.0.0-alpha.10",
     "autoprefixer": "^10.4.2",
     "eslint": "^8.25.0",

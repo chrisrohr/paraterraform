@@ -12,8 +12,10 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.paraterraform.config.AppConfig;
+import org.paraterraform.dao.StateLockDao;
 import org.paraterraform.dao.TerraformStateDao;
 import org.paraterraform.resource.StateResource;
+import org.paraterraform.resource.TerraformBackendResource;
 
 import java.util.EnumSet;
 import javax.servlet.DispatcherType;
@@ -49,10 +51,12 @@ public class App extends Application<AppConfig> {
         final var jdbi = factory.build(environment, appConfig.getDataSourceFactory(), "paraterraform-datasource");
 
         var terraformStateDao = jdbi.onDemand(TerraformStateDao.class);
+        var stateLockDao = jdbi.onDemand(StateLockDao.class);
 
         var jsonHelper = newDropwizardJsonHelper();
 
         environment.jersey().register(new StateResource(terraformStateDao, jsonHelper));
+        environment.jersey().register(new TerraformBackendResource(terraformStateDao, stateLockDao));
     }
 
     private static void configureCors(Environment environment) {

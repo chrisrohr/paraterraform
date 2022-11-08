@@ -7,7 +7,14 @@ installQuasarPlugin();
 
 describe('IndexPage', () => {
   const wrapper = mount(IndexPage,{
-    global: { provide: qLayoutInjections() },
+    global: {
+      provide: qLayoutInjections(),
+      mocks: {
+        '$api': {
+          get: async () => ({ data: []})
+        }
+      }
+    },
   });
 
   it('mounts without errors', () => {
@@ -15,6 +22,6 @@ describe('IndexPage', () => {
   });
 
   it('contains the required markup', () => {
-    expect(wrapper.html()).toContain("Home Page");
+    expect(wrapper.html()).toContain("Terraform States");
   });
 })

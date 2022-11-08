@@ -24,4 +24,6 @@ describe('UploadPage', () => {
   it('contains the required markup', () => {
     expect(wrapper.html()).toContain("Upload Page")
   });
+
+  // TODO: Add tests for various methods
 })

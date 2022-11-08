@@ -213,7 +213,7 @@ export default defineComponent({
       }
 
       if (diff[1] === null) {
-        return `-  ${diff[0]}`;
+        return `- ${diff[0]}`;
       }
 
       return `${diff[0]} ---> ${diff[1]}`;

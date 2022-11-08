@@ -1,20 +1,13 @@
 import { describe, expect, it } from '@jest/globals';
 import { installQuasarPlugin, qLayoutInjections } from '@quasar/quasar-app-extension-testing-unit-jest';
 import { mount } from '@vue/test-utils';
-import IndexPage from '../../../src/pages/IndexPage.vue';
+import ErrorNotFound from 'pages/ErrorNotFound.vue';
 
 installQuasarPlugin();
 
-describe('IndexPage', () => {
-  const wrapper = mount(IndexPage,{
-    global: {
-      provide: qLayoutInjections(),
-      mocks: {
-        '$api': {
-          get: async () => ({ data: []})
-        }
-      }
-    },
+describe('ErrorNotFound', () => {
+  const wrapper = mount(ErrorNotFound,{
+    global: { provide: qLayoutInjections() },
   });
 
   it('mounts without errors', () => {
@@ -22,6 +15,6 @@ describe('IndexPage', () => {
   });
 
   it('contains the required markup', () => {
-    expect(wrapper.html()).toContain("Terraform States");
+    expect(wrapper.html()).toContain("Oops. Nothing here...");
   });
 })

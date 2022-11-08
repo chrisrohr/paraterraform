@@ -37,25 +37,6 @@
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="/upload">
-            <q-item-section avatar>
-              <q-icon name="cloud_upload" />
-            </q-item-section>
-
-            <q-item-section>
-              Upload
-            </q-item-section>
-          </q-item>
-
-          <q-item clickable v-ripple to="/history">
-            <q-item-section avatar>
-              <q-icon name="history" />
-            </q-item-section>
-
-            <q-item-section>
-              History
-            </q-item-section>
-          </q-item>
         </q-list>
       </q-scroll-area>
     </q-drawer>

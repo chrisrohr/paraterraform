@@ -1,5 +1,7 @@
 package org.paraterraform.resource;
 
+import static org.kiwiproject.collect.KiwiLists.first;
+import static org.kiwiproject.collect.KiwiLists.second;
 import static org.kiwiproject.jaxrs.KiwiStandardResponses.standardDeleteResponse;
 import static org.kiwiproject.jaxrs.KiwiStandardResponses.standardGetResponse;
 import static org.kiwiproject.jaxrs.KiwiStandardResponses.standardPostResponse;
@@ -14,6 +16,7 @@ import org.paraterraform.model.TerraformState;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -39,12 +42,6 @@ public class StateResource {
     public StateResource(TerraformStateDao terraformStateDao, JsonHelper jsonHelper) {
         this.terraformStateDao = terraformStateDao;
         this.jsonHelper = jsonHelper;
-    }
-
-    @GET
-    public Response list() {
-        var states = terraformStateDao.find();
-        return Response.ok(states).build();
     }
 
     @GET
@@ -88,6 +85,22 @@ public class StateResource {
                 : jsonHelper.jsonDiff(contentB, contentA);
 
         return standardGetResponse(stringListMap, "can't happen");
+    }
+
+    @GET
+    @Path("/{stateName}/latest/diff")
+    public Response diffLatestChange(@PathParam("stateName") String stateName) {
+        var states = terraformStateDao.findStateHistoryByName(stateName);
+
+        if (states.size() < 2) {
+            return Response.ok(Map.of()).build();
+        }
+
+        var latestContent = terraformStateDao.findContentById(first(states).getId()).orElseThrow();
+        var previousContent = terraformStateDao.findContentById(second(states).getId()).orElseThrow();
+
+        var diff = jsonHelper.jsonDiff(previousContent, latestContent);
+        return Response.ok(diff).build();
     }
 
     @POST

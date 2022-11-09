@@ -50,4 +50,10 @@
             <column name="path" type="text"/>
         </createTable>
     </changeSet>
+
+    <changeSet id="3-add-updated-by" author="chrisrohr">
+        <addColumn tableName="terraform_states">
+            <column name="updated_by" type="text"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -61,6 +61,7 @@ public class TerraformBackendResource {
                 .name(stateName)
                 .content(content)
                 .uploadedAt(Instant.now())
+                .updatedBy(lock.map(StateLock::getLockedBy).orElse(null))
                 .build();
 
         terraformStateDao.insert(state);

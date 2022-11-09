@@ -25,4 +25,5 @@ public class TerraformState {
     @Builder.Default
     Instant uploadedAt = Instant.now();
 
+    String updatedBy;
 }

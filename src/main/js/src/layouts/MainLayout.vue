@@ -1,24 +1,49 @@
 <template>
-  <q-layout>
-    <div class="q-pa-md">
-    <q-toolbar class="bg-purple text-white shadow-2 rounded-borders">
-      <q-btn flat label="Foreground" />
-      <q-space />
+  <q-layout view="hHh lpR fFf">
+    <q-header elevated class="bg-primary text-white">
+      <q-toolbar>
+        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
 
-      <!--
-        notice shrink property since we are placing it
-        as child of QToolbar
-      -->
-      <q-tabs v-model="tab" shrink>
-        <q-route-tab exact clickable to="/" name="tab3" label="Home" />
-        <q-route-tab exact clickable to="/upload" name="tab1" label="Upload" />
-        <q-route-tab exact clickable to="/history" name="tab2" label="History" />
-      </q-tabs>
-    </q-toolbar>
-  </div>
-  <q-page-container>
-    <router-view />
-  </q-page-container>
+        <q-toolbar-title>
+          <q-avatar color="white">
+            <img src="/dome.svg" alt="Paraterraform">
+          </q-avatar>
+          Paraterraform
+        </q-toolbar-title>
+      </q-toolbar>
+    </q-header>
+
+    <q-drawer
+      v-model="leftDrawerOpen"
+      show-if-above
+      :mini="miniState"
+      @mouseover="toggleMiniState"
+      @mouseout="toggleMiniState"
+      mini-to-overlay
+      :width="200"
+      :breakpoint="500"
+      class="bg-grey-3"
+      side="left"
+      bordered>
+      <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
+        <q-list padding>
+          <q-item clickable v-ripple to="/">
+            <q-item-section avatar>
+              <q-icon name="home" />
+            </q-item-section>
+
+            <q-item-section>
+              Home
+            </q-item-section>
+          </q-item>
+
+        </q-list>
+      </q-scroll-area>
+    </q-drawer>
+
+    <q-page-container>
+      <router-view />
+    </q-page-container>
   </q-layout>
 
 </template>
@@ -28,8 +53,18 @@ import { ref } from 'vue';
 
 export default {
   setup() {
+    const leftDrawerOpen = ref(false);
+    const miniState = ref(true);
+
     return {
-      tab: ref(''),
+      leftDrawerOpen,
+      miniState,
+      toggleMiniState() {
+        miniState.value = !miniState.value;
+      },
+      toggleLeftDrawer() {
+        leftDrawerOpen.value = !leftDrawerOpen.value;
+      },
     };
   },
 };

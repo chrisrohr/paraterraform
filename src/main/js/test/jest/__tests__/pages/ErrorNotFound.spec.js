@@ -1,20 +1,13 @@
 import { describe, expect, it } from '@jest/globals';
 import { installQuasarPlugin, qLayoutInjections } from '@quasar/quasar-app-extension-testing-unit-jest';
 import { mount } from '@vue/test-utils';
-import HistoryPage from '../../../src/pages/HistoryPage.vue';
+import ErrorNotFound from 'pages/ErrorNotFound.vue';
 
 installQuasarPlugin();
 
-describe('HistoryPage', () => {
-  const wrapper = mount(HistoryPage,{
-    global: {
-      provide: qLayoutInjections(),
-      mocks: {
-        '$api': {
-          get: async () => ({ latestStates: []})
-        }
-      }
-    },
+describe('ErrorNotFound', () => {
+  const wrapper = mount(ErrorNotFound,{
+    global: { provide: qLayoutInjections() },
   });
 
   it('mounts without errors', () => {
@@ -22,7 +15,6 @@ describe('HistoryPage', () => {
   });
 
   it('contains the required markup', () => {
-    expect(wrapper.html()).toContain("History Page");
+    expect(wrapper.html()).toContain("Oops. Nothing here...");
   });
-
 })

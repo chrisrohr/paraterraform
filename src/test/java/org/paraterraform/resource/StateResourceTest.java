@@ -1,7 +1,9 @@
 package org.paraterraform.resource;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static javax.ws.rs.client.Entity.entity;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 import static org.kiwiproject.collect.KiwiLists.first;
 import static org.kiwiproject.test.constants.KiwiTestConstants.JSON_HELPER;
 import static org.kiwiproject.test.jaxrs.JaxrsTestHelper.assertCreatedResponseWithLocationEndingWith;
@@ -25,6 +27,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junitpioneer.jupiter.params.IntRangeSource;
 import org.kiwiproject.jaxrs.exception.JaxrsExceptionMapper;
 import org.kiwiproject.test.util.Fixtures;
 import org.mockito.ArgumentCaptor;
@@ -36,6 +40,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.IntStream;
 import javax.ws.rs.core.GenericType;
 
 @DisplayName("StateResource")
@@ -52,37 +57,20 @@ class StateResourceTest {
             .addProvider(JaxrsExceptionMapper.class)
             .build();
 
+    private static final TerraformState STATE_1 = TerraformState.builder()
+            .id(1L)
+            .content("{\"hello\": \"world\"}")
+            .uploadedAt(Instant.parse("2022-10-05T00:00:00.00Z"))
+            .build();
+    private static final TerraformState STATE_2 = TerraformState.builder()
+            .id(2L)
+            .content("{\"hello\": \"Chris\", \"color\": \"purple\"}")
+            .uploadedAt(Instant.parse("2022-10-05T00:01:00.00Z"))
+            .build();
+
     @BeforeEach
     void setUp() {
         reset(TERRAFORM_STATE_DAO);
-    }
-
-    @Nested
-    class GetList {
-
-        @Test
-        void shouldReturnAListOfTerraformStates() {
-            var state = TerraformState.builder()
-                    .id(1L)
-                    .name("Dev")
-                    .content("{}")
-                    .uploadedAt(Instant.now())
-                    .build();
-
-            when(TERRAFORM_STATE_DAO.find()).thenReturn(List.of(state));
-
-            var response = APP.client().target("/states")
-                    .request()
-                    .get();
-
-            assertOkResponse(response);
-
-            var listOfStates = response.readEntity(new GenericType<List<TerraformState>>(){});
-            var returnedState = first(listOfStates);
-            assertThat(returnedState)
-                    .usingRecursiveComparison()
-                    .isEqualTo(state);
-        }
     }
 
     @Nested
@@ -262,17 +250,52 @@ class StateResourceTest {
     }
 
     @Nested
+    class DiffLatestChange {
+
+        @SuppressWarnings("unchecked")
+        @ParameterizedTest
+        @IntRangeSource(from = 0, to = 2)
+        void shouldReturnEmptyMapWhenLessThanTwoStates(int count) {
+            var states = IntStream.of(count)
+                    .mapToObj(i -> TerraformState.builder().build())
+                    .toList();
+
+            when(TERRAFORM_STATE_DAO.findStateHistoryByName("foo")).thenReturn(states);
+
+            var response = APP.client().target("/states/{stateName}/latest/diff")
+                    .resolveTemplate("stateName", "foo")
+                    .request()
+                    .get();
+
+            assertOkResponse(response);
+
+            var diff = response.readEntity(Map.class);
+            assertThat(diff).isEmpty();
+        }
+
+        @SuppressWarnings("unchecked")
+        @Test
+        void shouldReturnDiffOfLastTwoStates() {
+            when(TERRAFORM_STATE_DAO.findStateHistoryByName("foo")).thenReturn(List.of(STATE_1, STATE_2));
+            when(TERRAFORM_STATE_DAO.findContentById(1L)).thenReturn(Optional.of(STATE_1.getContent()));
+            when(TERRAFORM_STATE_DAO.findContentById(2L)).thenReturn(Optional.of(STATE_2.getContent()));
+
+            var response = APP.client().target("/states/{stateName}/latest/diff")
+                    .resolveTemplate("stateName", "foo")
+                    .request()
+                    .get();
+
+            assertOkResponse(response);
+
+            var diff = response.readEntity(Map.class);
+            assertThat(diff).contains(
+                    entry("color", newArrayList("purple", null)),
+                    entry("hello", List.of("Chris", "world")));
+        }
+    }
+
+    @Nested
     class Diff {
-        private static final TerraformState STATE_1 = TerraformState.builder()
-                .id(1L)
-                .content("{\"hello\": \"world\"}")
-                .uploadedAt(Instant.parse("2022-10-05T00:00:00.00Z"))
-                .build();
-        private static final TerraformState STATE_2 = TerraformState.builder()
-                .id(1L)
-                .content("{\"hello\": \"Chris\", \"color\": \"purple\"}")
-                .uploadedAt(Instant.parse("2022-10-05T00:01:00.00Z"))
-                .build();
 
         @Test
         void shouldShowDifferencesGivenOrderedIds() {

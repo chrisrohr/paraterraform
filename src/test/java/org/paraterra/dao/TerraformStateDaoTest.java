@@ -1,4 +1,4 @@
-package org.paraterraform.dao;
+package org.paraterra.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.kiwiproject.test.junit.jupiter.Jdbi3DaoExtension;
 import org.kiwiproject.test.junit.jupiter.PostgresLiquibaseTestExtension;
-import org.paraterraform.model.TerraformState;
+import org.paraterra.model.TerraformState;
 import org.postgresql.util.PSQLException;
 
 import java.time.Instant;

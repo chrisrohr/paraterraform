@@ -1,4 +1,4 @@
-package org.paraterraform.dao;
+package org.paraterra.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.kiwiproject.base.UUIDs;
 import org.kiwiproject.test.junit.jupiter.Jdbi3DaoExtension;
 import org.kiwiproject.test.junit.jupiter.PostgresLiquibaseTestExtension;
-import org.paraterraform.model.StateLock;
+import org.paraterra.model.StateLock;
 
 import java.time.Instant;
 

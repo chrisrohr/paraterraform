@@ -1,4 +1,4 @@
-package org.paraterraform;
+package org.paraterra;
 
 import static org.kiwiproject.json.JsonHelper.newDropwizardJsonHelper;
 
@@ -11,11 +11,11 @@ import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
-import org.paraterraform.config.AppConfig;
-import org.paraterraform.dao.StateLockDao;
-import org.paraterraform.dao.TerraformStateDao;
-import org.paraterraform.resource.StateResource;
-import org.paraterraform.resource.TerraformBackendResource;
+import org.paraterra.config.AppConfig;
+import org.paraterra.dao.StateLockDao;
+import org.paraterra.dao.TerraformStateDao;
+import org.paraterra.resource.StateResource;
+import org.paraterra.resource.TerraformBackendResource;
 
 import java.util.EnumSet;
 import javax.servlet.DispatcherType;
@@ -48,7 +48,7 @@ public class App extends Application<AppConfig> {
         configureCors(environment);
 
         final var factory = new JdbiFactory();
-        final var jdbi = factory.build(environment, appConfig.getDataSourceFactory(), "paraterraform-datasource");
+        final var jdbi = factory.build(environment, appConfig.getDataSourceFactory(), "paraterra-datasource");
 
         var terraformStateDao = jdbi.onDemand(TerraformStateDao.class);
         var stateLockDao = jdbi.onDemand(StateLockDao.class);

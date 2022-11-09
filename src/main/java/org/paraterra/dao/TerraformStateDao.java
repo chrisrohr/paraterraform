@@ -1,4 +1,4 @@
-package org.paraterraform.dao;
+package org.paraterra.dao;
 
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
@@ -6,9 +6,9 @@ import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
-import org.paraterraform.dao.mapper.SlimTerraformMapper;
-import org.paraterraform.dao.mapper.TerraformStateMapper;
-import org.paraterraform.model.TerraformState;
+import org.paraterra.dao.mapper.SlimTerraformMapper;
+import org.paraterra.dao.mapper.TerraformStateMapper;
+import org.paraterra.model.TerraformState;
 
 import java.util.List;
 import java.util.Optional;

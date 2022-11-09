@@ -1,4 +1,4 @@
-package org.paraterraform.resource;
+package org.paraterra.resource;
 
 import static org.kiwiproject.collect.KiwiLists.first;
 import static org.kiwiproject.collect.KiwiLists.second;
@@ -10,8 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.kiwiproject.json.JsonHelper;
-import org.paraterraform.dao.TerraformStateDao;
-import org.paraterraform.model.TerraformState;
+import org.paraterra.dao.TerraformStateDao;
+import org.paraterra.model.TerraformState;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-package org.paraterraform.model;
+package org.paraterra.model;
 
 import lombok.Builder;
 import lombok.Value;

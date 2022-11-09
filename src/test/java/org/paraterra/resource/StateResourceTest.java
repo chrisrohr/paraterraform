@@ -1,4 +1,4 @@
-package org.paraterraform.resource;
+package org.paraterra.resource;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static javax.ws.rs.client.Entity.entity;
@@ -32,8 +32,8 @@ import org.junitpioneer.jupiter.params.IntRangeSource;
 import org.kiwiproject.jaxrs.exception.JaxrsExceptionMapper;
 import org.kiwiproject.test.util.Fixtures;
 import org.mockito.ArgumentCaptor;
-import org.paraterraform.dao.TerraformStateDao;
-import org.paraterraform.model.TerraformState;
+import org.paraterra.dao.TerraformStateDao;
+import org.paraterra.model.TerraformState;
 
 import java.io.IOException;
 import java.time.Instant;

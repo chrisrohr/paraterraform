@@ -1,10 +1,10 @@
-package org.paraterraform.dao.mapper;
+package org.paraterra.dao.mapper;
 
 import static org.kiwiproject.jdbc.KiwiJdbc.instantFromTimestamp;
 
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
-import org.paraterraform.model.StateLock;
+import org.paraterra.model.StateLock;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

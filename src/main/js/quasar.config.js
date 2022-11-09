@@ -193,7 +193,7 @@ module.exports = configure((/* ctx */) => ({
     builder: {
       // https://www.electron.build/configuration/configuration
 
-      appId: 'paraterraform',
+      appId: 'paraterra',
     },
   },
 

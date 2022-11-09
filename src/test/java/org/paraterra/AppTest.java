@@ -1,4 +1,4 @@
-package org.paraterraform;
+package org.paraterra;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kiwiproject.test.dropwizard.app.DropwizardAppTests.healthCheckNamesOf;
@@ -9,9 +9,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.kiwiproject.test.dropwizard.app.PostgresAppTestExtension;
-import org.paraterraform.config.AppConfig;
-import org.paraterraform.resource.StateResource;
-import org.paraterraform.resource.TerraformBackendResource;
+import org.paraterra.config.AppConfig;
+import org.paraterra.resource.StateResource;
+import org.paraterra.resource.TerraformBackendResource;
 
 @DisplayName("App")
 class AppTest {

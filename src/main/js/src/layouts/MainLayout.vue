@@ -6,9 +6,9 @@
 
         <q-toolbar-title>
           <q-avatar color="white">
-            <img src="/dome.svg" alt="Paraterraform">
+            <img src="/dome.svg" alt="Paraterra">
           </q-avatar>
-          Paraterraform
+          Paraterra
         </q-toolbar-title>
       </q-toolbar>
     </q-header>

@@ -1,4 +1,4 @@
-package org.paraterraform.resource;
+package org.paraterra.resource;
 
 import static javax.ws.rs.client.Entity.json;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,10 +26,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.kiwiproject.base.UUIDs;
 import org.kiwiproject.jaxrs.exception.JaxrsExceptionMapper;
 import org.kiwiproject.test.util.Fixtures;
-import org.paraterraform.dao.StateLockDao;
-import org.paraterraform.dao.TerraformStateDao;
-import org.paraterraform.model.StateLock;
-import org.paraterraform.model.TerraformState;
+import org.paraterra.dao.StateLockDao;
+import org.paraterra.dao.TerraformStateDao;
+import org.paraterra.model.StateLock;
+import org.paraterra.model.TerraformState;
 
 import java.util.Map;
 import java.util.Optional;

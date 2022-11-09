@@ -1,12 +1,12 @@
-package org.paraterraform.dao;
+package org.paraterra.dao;
 
 import org.jdbi.v3.sqlobject.config.RegisterRowMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
-import org.paraterraform.dao.mapper.StateLockMapper;
-import org.paraterraform.model.StateLock;
+import org.paraterra.dao.mapper.StateLockMapper;
+import org.paraterra.model.StateLock;
 
 import java.util.Optional;
 

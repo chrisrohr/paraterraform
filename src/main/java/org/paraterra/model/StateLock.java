@@ -1,4 +1,4 @@
-package org.paraterraform.model;
+package org.paraterra.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;

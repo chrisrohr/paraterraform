@@ -1,13 +1,13 @@
-package org.paraterraform.resource;
+package org.paraterra.resource;
 
 import static javax.ws.rs.client.Entity.json;
 import static org.kiwiproject.jaxrs.KiwiStandardResponses.standardGetResponse;
 
 import lombok.extern.slf4j.Slf4j;
-import org.paraterraform.dao.StateLockDao;
-import org.paraterraform.dao.TerraformStateDao;
-import org.paraterraform.model.StateLock;
-import org.paraterraform.model.TerraformState;
+import org.paraterra.dao.StateLockDao;
+import org.paraterra.dao.TerraformStateDao;
+import org.paraterra.model.StateLock;
+import org.paraterra.model.TerraformState;
 
 import java.time.Instant;
 import javax.ws.rs.Consumes;

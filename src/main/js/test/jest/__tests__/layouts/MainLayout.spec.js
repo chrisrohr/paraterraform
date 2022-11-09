@@ -15,7 +15,7 @@ describe('MainLayout', () => {
   });
 
   it('contains the title', () => {
-    expect(wrapper.html()).toContain("Paraterraform");
+    expect(wrapper.html()).toContain("Paraterra");
   });
 
   it('contains the menu items', () => {

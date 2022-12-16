@@ -14,7 +14,7 @@
         <dropwizard.version>2.1.4</dropwizard.version>
         <jdbi3.version>3.32.0</jdbi3.version>
         <kiwi.version>2.3.0</kiwi.version>
-        <postgresql.version>42.5.0</postgresql.version>
+        <postgresql.version>42.5.1</postgresql.version>
 
         <!-- Versions for provided dependencies -->
         <lombok.version>1.18.24</lombok.version>

@@ -46,7 +46,7 @@
     "eslint-plugin-jest": "^27.1.5",
     "eslint-plugin-vue": "^9.8.0",
     "majestic": "^1.7.0",
-    "postcss": "^8.4.19",
+    "postcss": "^8.4.20",
     "eslint-plugin-cypress": "^2.11.3"
   },
   "engines": {
